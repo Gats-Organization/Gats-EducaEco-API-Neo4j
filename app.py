@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from neo4j import GraphDatabase
 from config import Config
+import os
 
 app = Flask(__name__)
 
@@ -69,4 +70,4 @@ def verificar_contador_vezes_jogadas(email_aluno):
     return jsonify({"email_aluno": email_aluno, "vezes_jogadas": record["vezes_jogadas"]})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
