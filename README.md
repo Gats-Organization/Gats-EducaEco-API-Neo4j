@@ -145,4 +145,3 @@ O projeto utiliza um arquivo `.env` para armazenar credenciais sensíveis e info
 - **Método:** `GET`
 - **Descrição:** Retorna o número de vezes jogadas pelo aluno.
 - **Parâmetros de URL:** `email_aluno`: E-mail do aluno a ser consultado.
--
