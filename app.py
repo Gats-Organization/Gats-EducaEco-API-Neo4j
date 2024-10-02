@@ -1,19 +1,44 @@
 from flask import Flask, request, jsonify
 from neo4j import GraphDatabase
 from config import Config
-import os
+from flasgger import Swagger
 
 app = Flask(__name__)
+swagger = Swagger(app)  # Inicializa o Swagger na sua aplicação Flask
 
 uri = Config.NEO4J_URI
 driver = GraphDatabase.driver(uri, auth=(Config.NEO4J_USER, Config.NEO4J_PASSWORD))
 
-
-
-#Tela de Vídeos
+# Tela de Vídeos
 # Rota para incrementar o contador de tela
 @app.route('/incrementar-contador-videos-vistos', methods=['POST'])
 def incrementar_contador_videos_vistos():
+    """
+    Incrementa o contador de vídeos vistos do aluno
+    ---
+    parameters:
+      - name: email_aluno
+        in: body
+        type: string
+        required: true
+        description: O email do aluno
+        schema:
+          type: object
+          properties:
+            email_aluno:
+              type: string
+              description: O email do aluno
+    responses:
+      200:
+        description: Contador de vídeos incrementado com sucesso
+        schema:
+          type: object
+          properties:
+            email_aluno:
+              type: string
+            mensagem:
+              type: string
+    """
     data = request.get_json()
     email_aluno = data.get("email_aluno")
 
@@ -26,9 +51,31 @@ def incrementar_contador_videos_vistos():
 
     return jsonify({"email_aluno": email_aluno, "mensagem": "Contador de vídeos vistos incrementado com sucesso!"})
 
-# Rota para verificar o contador
+# Rota para verificar o contador de vídeos vistos
 @app.route('/verificar-contador-videos-vistos/<email_aluno>', methods=['GET'])
 def verificar_contador_videos_vistos(email_aluno):
+    """
+    Verifica o contador de vídeos vistos do aluno
+    ---
+    parameters:
+      - name: email_aluno
+        in: path
+        type: string
+        required: true
+        description: O email do aluno
+    responses:
+      200:
+        description: Contador de vídeos vistos retornado com sucesso
+        schema:
+          type: object
+          properties:
+            email_aluno:
+              type: string
+            videos_vistos:
+              type: integer
+      404:
+        description: Aluno não encontrado
+    """
     with driver.session() as session:
         result = session.run("MATCH (a:Aluno {email: $email_aluno}) RETURN a.videos_vistos AS videos_vistos",
                              email_aluno=email_aluno)
@@ -40,10 +87,36 @@ def verificar_contador_videos_vistos(email_aluno):
     return jsonify({"email_aluno": email_aluno, "videos_vistos": record["videos_vistos"]})
 
 
-#Tela de Jogos
-# Rota para incrementar o contador de tela@app.route('/incrementar-contador-videos-vistos', methods=['POST'])
+# Tela de Jogos
+# Rota para incrementar o contador de jogos
 @app.route('/incrementar-contador-vezes-jogadas', methods=['POST'])
 def incrementar_contador_vezes_jogadas():
+    """
+    Incrementa o contador de vezes jogadas do aluno
+    ---
+    parameters:
+      - name: email_aluno
+        in: body
+        type: string
+        required: true
+        description: O email do aluno
+        schema:
+          type: object
+          properties:
+            email_aluno:
+              type: string
+              description: O email do aluno
+    responses:
+      200:
+        description: Contador de vezes jogadas incrementado com sucesso
+        schema:
+          type: object
+          properties:
+            email_aluno:
+              type: string
+            mensagem:
+              type: string
+    """
     data = request.get_json()
     email_aluno = data.get("email_aluno")
 
@@ -56,9 +129,31 @@ def incrementar_contador_vezes_jogadas():
 
     return jsonify({"email_aluno": email_aluno, "mensagem": "Contador de vezes jogadas incrementado com sucesso!"})
 
-# Rota para verificar o contador
+# Rota para verificar o contador de vezes jogadas
 @app.route('/verificar-contador-vezes-jogadas/<email_aluno>', methods=['GET'])
 def verificar_contador_vezes_jogadas(email_aluno):
+    """
+    Verifica o contador de vezes jogadas do aluno
+    ---
+    parameters:
+      - name: email_aluno
+        in: path
+        type: string
+        required: true
+        description: O email do aluno
+    responses:
+      200:
+        description: Contador de vezes jogadas retornado com sucesso
+        schema:
+          type: object
+          properties:
+            email_aluno:
+              type: string
+            vezes_jogadas:
+              type: integer
+      404:
+        description: Aluno não encontrado
+    """
     with driver.session() as session:
         result = session.run("MATCH (a:Aluno {email: $email_aluno}) RETURN a.vezes_jogadas AS vezes_jogadas",
                              email_aluno=email_aluno)
