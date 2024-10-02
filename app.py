@@ -11,23 +11,17 @@ driver = GraphDatabase.driver(uri, auth=(Config.NEO4J_USER, Config.NEO4J_PASSWOR
 
 # Tela de Vídeos
 # Rota para incrementar o contador de tela
-@app.route('/incrementar-contador-videos-vistos', methods=['POST'])
-def incrementar_contador_videos_vistos():
+@app.route('/incrementar-contador-videos-vistos/<email_aluno>', methods=['POST'])
+def incrementar_contador_videos_vistos(email_aluno):
     """
     Incrementa o contador de vídeos vistos do aluno
     ---
     parameters:
       - name: email_aluno
-        in: body
+        in: path
         type: string
         required: true
         description: O email do aluno
-        schema:
-          type: object
-          properties:
-            email_aluno:
-              type: string
-              description: O email do aluno
     responses:
       200:
         description: Contador de vídeos incrementado com sucesso
@@ -39,9 +33,6 @@ def incrementar_contador_videos_vistos():
             mensagem:
               type: string
     """
-    data = request.get_json()
-    email_aluno = data.get("email_aluno")
-
     with driver.session() as session:
         session.run("""
             MERGE (a:Aluno {email: $email_aluno})
@@ -89,23 +80,17 @@ def verificar_contador_videos_vistos(email_aluno):
 
 # Tela de Jogos
 # Rota para incrementar o contador de jogos
-@app.route('/incrementar-contador-vezes-jogadas', methods=['POST'])
-def incrementar_contador_vezes_jogadas():
+@app.route('/incrementar-contador-vezes-jogadas/<email_aluno>', methods=['POST'])
+def incrementar_contador_vezes_jogadas(email_aluno):
     """
     Incrementa o contador de vezes jogadas do aluno
     ---
     parameters:
       - name: email_aluno
-        in: body
+        in: path
         type: string
         required: true
         description: O email do aluno
-        schema:
-          type: object
-          properties:
-            email_aluno:
-              type: string
-              description: O email do aluno
     responses:
       200:
         description: Contador de vezes jogadas incrementado com sucesso
@@ -117,9 +102,6 @@ def incrementar_contador_vezes_jogadas():
             mensagem:
               type: string
     """
-    data = request.get_json()
-    email_aluno = data.get("email_aluno")
-
     with driver.session() as session:
         session.run("""
             MERGE (a:Aluno {email: $email_aluno})
