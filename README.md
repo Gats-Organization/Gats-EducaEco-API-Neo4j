@@ -1,6 +1,6 @@
 # EducaEco API - Neo4j
 
-EducaEco é uma API desenvolvida em Python com Flask e utilizando o Neo4j como banco de dados para gerenciar informações relacionadas a alunos e contadores de atividades (como vídeos vistos e jogos jogados). A API oferece endpoints para incrementar e consultar esses contadores.
+EducaEco é uma API desenvolvida em Python com Flask e utilizando o Neo4j como banco de dados para gerenciar informações relacionadas a alunos e contadores de atividades (como vídeos vistos, jogos jogados e quizzes feitos). A API oferece endpoints para incrementar e consultar esses contadores.
 
 ## Índice
 
@@ -13,6 +13,8 @@ EducaEco é uma API desenvolvida em Python com Flask e utilizando o Neo4j como b
   - [Verificar contador de vídeos vistos](#verificar-contador-de-vídeos-vistos)
   - [Incrementar contador de vezes jogadas](#incrementar-contador-de-vezes-jogadas)
   - [Verificar contador de vezes jogadas](#verificar-contador-de-vezes-jogadas)
+  - [Incrementar contador de quizzes feitos](#incrementar-contador-de-quizzes-feitos)
+  - [Verificar contador de quizzes feitos](#verificar-contador-de-quizzes-feitos)
 - [Licença](#licença)
 
 ## Tecnologias
@@ -145,3 +147,47 @@ O projeto utiliza um arquivo `.env` para armazenar credenciais sensíveis e info
 - **Método:** `GET`
 - **Descrição:** Retorna o número de vezes jogadas pelo aluno.
 - **Parâmetros de URL:** `email_aluno`: E-mail do aluno a ser consultado.
+- **Resposta:**
+    ```json
+    {
+      "email_aluno": "email@example.com",
+      "vezes_jogadas": 3
+    }
+    ```
+
+### Incrementar contador de quizzes feitos
+
+- **Rota:** `/incrementar-contador-quizzes-feitos`
+- **Método:** `POST`
+- **Descrição:** Incrementa o contador de quizzes feitos para o aluno.
+- **Body (JSON):**
+    ```json
+    {
+      "email_aluno": "email@example.com"
+    }
+    ```
+- **Resposta:**
+    ```json
+    {
+      "email_aluno": "email@example.com",
+      "mensagem": "Contador incrementado com sucesso!"
+    }
+    ```
+
+### Verificar contador de quizzes feitos
+
+- **Rota:** `/verificar-contador-quizzes-feitos/<email_aluno>`
+- **Método:** `GET`
+- **Descrição:** Retorna o número de quizzes feitos pelo aluno.
+- **Parâmetros de URL:** `email_aluno`: E-mail do aluno a ser consultado.
+- **Resposta:**
+    ```json
+    {
+      "email_aluno": "email@example.com",
+      "quizzes_feitos": 2
+    }
+    ```
+
+## Licença
+
+Este projeto está licenciado sob a [MIT License](LICENSE).
