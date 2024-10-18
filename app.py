@@ -146,5 +146,73 @@ def verificar_contador_vezes_jogadas(email_aluno):
 
     return jsonify({"email_aluno": email_aluno, "vezes_jogadas": record["vezes_jogadas"]})
 
+
+# Rota para incrementar o contador de quizzes feitos
+@app.route('/incrementar-contador-quizzes-feitos/<email_aluno>', methods=['POST'])
+def incrementar_contador_quizzes_feitos(email_aluno):
+    """
+    Incrementa o contador de quizzes feitos do aluno
+    ---
+    parameters:
+      - name: email_aluno
+        in: path
+        type: string
+        required: true
+        description: O email do aluno
+    responses:
+      200:
+        description: Contador de quizzes feitos incrementado com sucesso
+        schema:
+          type: object
+          properties:
+            email_aluno:
+              type: string
+            mensagem:
+              type: string
+    """
+    with driver.session() as session:
+        session.run("""
+            MERGE (a:Aluno {email: $email_aluno})
+            ON CREATE SET a.quizzes_feitos = 1, a.videos_vistos = 0, a.vezes_jogadas = 0
+            ON MATCH SET a.quizzes_feitos = a.quizzes_feitos + 1
+        """, email_aluno=email_aluno)
+
+    return jsonify({"email_aluno": email_aluno, "mensagem": "Contador de quizzes feitos incrementado com sucesso!"})
+
+# Rota para verificar o contador de quizzes feitos
+@app.route('/verificar-contador-quizzes-feitos/<email_aluno>', methods=['GET'])
+def verificar_contador_quizzes_feitos(email_aluno):
+    """
+    Verifica o contador de quizzes feitos do aluno
+    ---
+    parameters:
+      - name: email_aluno
+        in: path
+        type: string
+        required: true
+        description: O email do aluno
+    responses:
+      200:
+        description: Contador de quizzes feitos retornado com sucesso
+        schema:
+          type: object
+          properties:
+            email_aluno:
+              type: string
+            quizzes_feitos:
+              type: integer
+      404:
+        description: Aluno não encontrado
+    """
+    with driver.session() as session:
+        result = session.run("MATCH (a:Aluno {email: $email_aluno}) RETURN a.quizzes_feitos AS quizzes_feitos",
+                             email_aluno=email_aluno)
+        record = result.single()
+
+    if record is None:
+        return jsonify({"error": "Aluno não encontrado"}), 404
+
+    return jsonify({"email_aluno": email_aluno, "quizzes_feitos": record["quizzes_feitos"]})
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
